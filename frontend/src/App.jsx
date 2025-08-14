@@ -10,7 +10,7 @@ function App() {
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post('http://localhost:8000/extract', { text: inputText });
+      const res = await axios.post('https://simple-full-stack-setup-document-react.onrender.com/extract', { text: inputText });
       setEmails(res.data.emails);
       setPhones(res.data.phones);
       setError(null);
