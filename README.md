@@ -183,3 +183,111 @@ npm run dev
    ```
 3. Click **Extract Emails & Phones**
 4. Results will be displayed below.
+
+---
+
+## 🌍 Hosting Guide — Backend on Render & Frontend on Vercel
+
+This setup uses:
+
+* **Backend (FastAPI)** → Render (Free tier)
+* **Frontend (React + Vite)** → Vercel (Free tier)
+
+---
+
+### **1️⃣ Hosting the Backend on Render**
+
+#### Step 1 — Prepare Backend
+
+* Inside `backend/requirements.txt` make sure you have:
+
+  ```txt
+  fastapi[standard]
+  uvicorn
+  ```
+* Your backend **must bind to** `0.0.0.0` and use the `$PORT` environment variable.
+  In Render’s Start Command, we’ll set:
+
+  ```bash
+  uvicorn main:app --host 0.0.0.0 --port $PORT
+  ```
+
+---
+
+#### Step 2 — Push Backend to GitHub
+
+* Commit and push your backend code to GitHub.
+* You can keep frontend and backend in the same repo, but Render will only use the `backend` folder.
+
+---
+
+#### Step 3 — Deploy to Render
+
+1. Go to [Render](https://render.com/).
+2. **Create New → Web Service**.
+3. Connect your GitHub repo.
+4. Settings:
+
+   * **Root Directory** → `backend`
+   * **Environment** → Python
+   * **Build Command** → (leave blank, Render will auto-install from `requirements.txt`)
+   * **Start Command** →
+
+     ```bash
+     uvicorn main:app --host 0.0.0.0 --port $PORT
+     ```
+5. Click **Create Web Service**.
+6. Wait until the deployment finishes — Render will give you a live URL:
+
+   ```
+   https://your-backend.onrender.com
+   ```
+
+---
+
+### **2️⃣ Hosting the Frontend on Vercel**
+
+#### Step 1 — Update API URL
+
+* In `frontend/src/App.jsx`, replace:
+
+  ```javascript
+  const response = await axios.post('http://localhost:8000/extract', { text: inputText });
+  ```
+
+  with:
+
+  ```javascript
+  const response = await axios.post('https://your-backend.onrender.com/extract', { text: inputText });
+  ```
+
+---
+
+#### Step 2 — Push Frontend to GitHub
+
+* Commit and push the `frontend` folder to GitHub (can be same repo as backend).
+
+---
+
+#### Step 3 — Deploy to Vercel
+
+1. Go to [Vercel](https://vercel.com/).
+2. Click **Add New → Project**.
+3. Import your GitHub repo.
+4. Select the `frontend` folder as the root.
+5. Build settings:
+
+   * **Framework Preset** → `Vite`
+   * **Build Command** → `npm run build`
+   * **Output Directory** → `dist`
+6. Click **Deploy**.
+
+---
+
+#### Step 4 — Test the Full App
+
+* Visit your **Vercel frontend URL** (e.g. `https://your-frontend.vercel.app`)
+* Enter some text containing emails & phone numbers.
+* Click **Extract** → data should come from the **Render backend**.
+
+---
