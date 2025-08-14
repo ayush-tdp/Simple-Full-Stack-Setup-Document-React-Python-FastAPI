@@ -1,4 +1,4 @@
-# React + FastAPI Email & Phone Extractor
+# React + Python + FastAPI
 
 A simple full-stack app that takes text input, extracts **emails** and **phone numbers** using regex, and displays the results.
 
